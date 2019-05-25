@@ -19,7 +19,7 @@
         <a href="#" class="logo"><img src="images/logo02.png" alt="logo"></a>
         <div class="user_info">
             <img src="images/2.jpg" alt="person">
-            <span>欢迎&nbsp;&nbsp;李思思</span>
+            <span>欢迎&nbsp;&nbsp;<i>李思思</i></span>
             <b>管理员</b>
         </div>
         <div class="menu">
@@ -134,8 +134,20 @@
             2. 提示成功之后
             3. 去登录页
         2. 取消 关闭提示框
+
+    获取用户信息
+        请求地址：https://autumnfish.cn/big/admin/getuser
+        请求方式：get
+        请求参数：无
+        步骤
+        1. 进入到首页之后
+        2. 通过ajax获取用户信息
+        3. 数据获取到之后 渲染到页面上即可
+
     */
     $(function(){
+
+        //添加用户退出功能
         $('#out').click(function(){
             $('.modal-out').modal();
         });
@@ -150,6 +162,17 @@
                     }
                 }
             })
+        });
+
+        //添加获取用户信息功能
+        $.ajax({
+            url:'https://autumnfish.cn/big/admin/getuser',
+            type:'get',
+            success:function(backData){
+                $('.user_info>img').attr('src',backData.user_pic);
+                $('user_info>span>i').text(backData.nickname);
+                $('.user_center_link>img').attr('src',backData.user_pic);
+            }
         })
     })
 </script>
