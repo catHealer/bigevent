@@ -24,19 +24,19 @@
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">用户名称：</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control" id="inputEmail3" value="李思思">
+                        <input type="text" class="form-control username" id="inputEmail3" value="李思思">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">昵称：</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control" id="inputEmail3" value="思思">
+                        <input type="text" class="form-control nickname" id="inputEmail3" value="思思">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">邮箱：</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control" id="inputEmail3" value="lisisi@126.com">
+                        <input type="text" class="form-control email" id="inputEmail3" value="lisisi@126.com">
                     </div>
                 </div>
                 
@@ -51,7 +51,7 @@
                 <div class="form-group">
                         <label for="inputEmail3" class="col-sm-2 control-label">密码：</label>
                         <div class="col-sm-4">
-                            <input type="password" class="form-control" id="inputEmail3" value="12345678">
+                            <input type="password" class="form-control password" id="inputEmail3" value="12345678">
                         </div>
                     </div>
                
@@ -66,7 +66,38 @@
     </div>
 
     <script>
+        /*
+        获取用户信息
+            请求地址：https://autumnfish.cn/big/admin/userinfo_get 
+            请求方式：get
+            请求参数：无
+             步骤    
+            1. 进入个人中心页之后
+            2. 通过ajax获取个人中心数据
+            3. 数据获取到之后渲染到页面上
+
+        图片预览功能
+            步骤
+                1. 表单元素的change事件 （value值 改变的时候会触发）
+                2. 获取选中的文件
+                3. 生成一个url地址
+                4. 把这个url地址设置给img的src属性即可
+
+        
+        
+        */
             $(function(){
+                //添加获取用户信息功能
+                $.ajax({
+                    url:'https://autumnfish.cn/big/admin/userinfo_get',
+                    type:'get',
+                    success:function(backData){
+                        for (var key in backData.data) {
+                            $('.form-group input.'+key).val(backData.data[key]);
+                        }
+                        $('.form-group .user_pic').attr('src',backData.data.user_pic);
+                    }
+                })
                
                //添加图片预览功能
                //change事件绑定，使用户选择照片时预览相应的照片
