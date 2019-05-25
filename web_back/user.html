@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="css/iconfont.css">
     <link rel="stylesheet" href="css/main.css">
     <script src="js/jquery-1.12.4.min.js"></script>
+    <script src="./js/bootstrap/js/bootstrap.min.js"></script>
 
 </head>
 
@@ -24,19 +25,19 @@
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">用户名称：</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control username" id="inputEmail3" value="李思思">
+                        <input type="text" class="form-control username" id="inputEmail3" value="李思思" name="username">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">昵称：</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control nickname" id="inputEmail3" value="思思">
+                        <input type="text" class="form-control nickname" id="inputEmail3" value="思思" name="nickname">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">邮箱：</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control email" id="inputEmail3" value="lisisi@126.com">
+                        <input type="text" class="form-control email" id="inputEmail3" value="lisisi@126.com" name="email">
                     </div>
                 </div>
                 
@@ -44,14 +45,14 @@
                     <label for="inputPassword3" class="col-sm-2 control-label">用户图标：</label>
                     <div class="col-sm-10">
                         <img src="images/2.jpg" alt="" class="user_pic">
-                        <input type="file" id="exampleInputFile">
+                        <input type="file" id="exampleInputFile" name="user_pic">
                     </div>
                 </div>
 
                 <div class="form-group">
                         <label for="inputEmail3" class="col-sm-2 control-label">密码：</label>
                         <div class="col-sm-4">
-                            <input type="password" class="form-control password" id="inputEmail3" value="12345678">
+                            <input type="password" class="form-control password" id="inputEmail3" value="12345678" name="password">
                         </div>
                     </div>
                
@@ -65,6 +66,23 @@
         </div>
     </div>
 
+        <!-- 提示框 -->
+        <div class="modal fade modal-out" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                      <h4 class="modal-title">提示</h4>
+                    </div>
+                    <div class="modal-body">
+                      <p>修改成功&hellip;</p>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-default" data-dismiss="modal">退出</button>
+                    </div>
+                  </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+              </div><!-- /.modal -->
     <script>
         /*
         获取用户信息
@@ -83,7 +101,21 @@
                 3. 生成一个url地址
                 4. 把这个url地址设置给img的src属性即可
 
-        
+        用户信息修改功能
+            请求地址：https://autumnfish.cn/big/admin/userinfo_edit =
+            请求方式：post=
+            请求参数：使用formdata提交=
+            步骤
+                1. 为修改按钮绑定点击事件
+                2. 获取数据
+                3. 通过ajax发到服务器 formData jQ需要设置2个属性
+                4. 如果修改成功了
+                   1. 弹框
+                      1. c+v bootstrap的弹框
+                   2. $('弹框').modal()
+                5. 重新加载页面 
+                6. window.location.reload() 
+
         
         */
             $(function(){
@@ -97,7 +129,7 @@
                         }
                         $('.form-group .user_pic').attr('src',backData.data.user_pic);
                     }
-                })
+                });
                
                //添加图片预览功能
                //change事件绑定，使用户选择照片时预览相应的照片
@@ -108,6 +140,30 @@
                     var url = URL.createObjectURL(this.files[0]);
                     //再将地址赋值给img
                     $(this).prev().attr('src',url);
+                });
+
+                //添加用户信息修改功能
+                $('.btn-success').click(function(e){
+                    //去除表单的默认事件
+                    e.preventDefault();
+                    //实例化一个FormData对象
+                    var formData = new FormData($('.article_form')[0]);
+                    $.ajax({
+                        url:'https://autumnfish.cn/big/admin/userinfo_edit',
+                        type:'post',
+                        data:formData,
+                        contentType:false,
+                        processData:false,
+                        success:function(backData){
+                            if(backData.code == 200) {
+                                $('.modal').modal();
+                                setTimeout(function(){
+                                    //刷新页面
+                                    window.location.reload();
+                                },1000);
+                            }
+                        }
+                    })
                 })
             })
         </script>
