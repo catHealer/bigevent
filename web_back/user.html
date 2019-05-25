@@ -65,6 +65,21 @@
         </div>
     </div>
 
+    <script>
+            $(function(){
+               
+               //添加图片预览功能
+               //change事件绑定，使用户选择照片时预览相应的照片
+                $('#exampleInputFile').change(function(e){
+                    //将文件转换为url地址
+                    console.log(this.files);
+                    
+                    var url = URL.createObjectURL(this.files[0]);
+                    //再将地址赋值给img
+                    $(this).prev().attr('src',url);
+                })
+            })
+        </script>
 </body>
 
 </html>
