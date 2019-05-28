@@ -24,11 +24,7 @@
           <div class="col-xs-6">
             <form class="form-inline">
               <select id="selCategory" name="" class="form-control input-sm">
-                <option>所有分类</option>
-                <option>未分类</option>
-                <option>奇趣事</option>
-                <option>会生活</option>
-                <option>爱旅行</option>
+                <option value="">所有分类</option>
               </select>
               <select id="selStatus" name="" class="form-control input-sm">
                 <option value="">所有状态</option>
@@ -304,7 +300,6 @@
         <td class="text-center">{{$value.date}}</td>
 
         <td class="text-center">{{$value.state}}</td>
-
         <td class="text-center">
           <a href="post-edit.html?id=995" class="btn btn-default btn-xs">编辑</a>
           <a href="javascript:deleteTr( 995 );" class="btn btn-danger btn-xs"
@@ -312,6 +307,12 @@
           >
         </td>
       </tr>
+      {{/each}}
+    </script>
+    <!-- 定义模板 -->
+    <script id="type" type="text/html">
+      {{each data}}
+      <option value='{{$value.id}}'>{{$value.name}}</option>
       {{/each}}
     </script>
 
@@ -340,14 +341,23 @@
                 4. 渲染到页面上
 
         筛选
+          所有状态
             步骤
             1. 用户选中了状态参数之后
             2. 点击筛选 click事件
             3. ajax调用接口 额外的筛选的值传递给服务器
+          所有分类
+            步骤
+            1. 进入列表页之后，获取分类信息
+            2. 渲染到select的内部
+            3. 点击筛选之后 调用的数据获取方法中 额外的增加一个参数
+
 
         */
         //定义页码的变量
         var myPage = 1;
+        //定义默认的总页码
+        var myTotalPage = 20;
         //将获取数据封装成函数
         function getData() {
           $.ajax({
@@ -356,10 +366,25 @@
             data: {
               perpage: 10,
               page: myPage,
-              state:$('#selStatus').val()
+              state: $("#selStatus").val(),
+              type: $("#selCategory").val()
             },
             success: function(backData) {
               $("tbody").html(template("article", backData));
+              //判断当前页数不等于获取到的数据的页数才重新设置页码
+              if (myTotalPage != backData.totalPage) {
+                //保存获取到的页数
+                myTotalPage = backData.totalPage;
+                //每一次获取都从第一页开始
+                var currentPage = 1;
+                $pagination.twbsPagination("destroy");
+                $pagination.twbsPagination(
+                  $.extend({}, defaultOpts, {
+                    startPage: currentPage,
+                    totalPages: myTotalPage
+                  })
+                );
+              }
             }
           });
         }
@@ -371,7 +396,7 @@
         var $pagination = $(".pagination");
         // 默认设置
         var defaultOpts = {
-          totalPages: 20,
+          totalPages: myTotalPage,
           first: "第一页",
           prev: "上一页",
           next: "下一页",
@@ -389,14 +414,20 @@
         $pagination.twbsPagination(defaultOpts);
 
         //给筛选框添加点击事件
-        $('#btnSearch').click(function(e){
+        $("#btnSearch").click(function(e) {
           e.preventDefault();
           getData();
-      })
-      });
+        });
 
-      
-      
+        //获取分类的数据
+        $.ajax({
+          url: "http://localhost:8000/admin/category_search",
+          type: "get",
+          success: function(backData) {
+            $("#selCategory").append(template("type", backData));
+          }
+        });
+      });
     </script>
   </body>
 </html>
