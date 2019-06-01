@@ -277,7 +277,7 @@
         {{else}}
         <li>
         {{/if}}
-            <a href="#"><img src="{{$value.cover}}" alt=""></a>
+            <a href="./article.html?id={{$value.id}}"><img src="{{$value.cover}}" alt=""></a>
             <p>{{$value.title}}</p>
         </li>
         {{/each}}
@@ -293,12 +293,13 @@
         <li><a href="javascript:search({{$value.id}})">{{$value.name}}</a></li>
         {{/each}}
     </script>
+    <!-- 底部文章模板 -->
     <script id="article2" type="text/html">
       {{each data}}
       <div class="common_news_list">
-        <a href="#" class="list_pic"><img src="{{$value.cover}}" alt=""></a>
+        <a href="./article.html?id={{$value.id}}" class="list_pic"><img src="{{$value.cover}}" alt=""></a>
         <h4>
-          <a href="#">{{$value.title}} </a>
+          <a href="./article.html?id={{$value.id}}">{{$value.title}} </a>
         </h4>
         <p>
           {{@$value.content}}
@@ -329,7 +330,7 @@
           data: {
             perpage: 5,
             state: "已发布",
-            type: id
+            type: id || window.location.search.split('=')[1]
           },
           success: function(backData) {
               $('.focus_list').html(template('article1',backData));
