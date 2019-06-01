@@ -32,11 +32,11 @@
           >
           <ul class="level_two">
             <li class="up"></li>
-            <li><a href="#">最 新</a></li>
+            <li><a href="javascript:search();">最 新</a></li>
           </ul>
         </div>
         <ul class="left_menu fl">
-          <li><a href="#">最 新</a></li>
+          <li><a href="javascript:search();">最 新</a></li>
         </ul>
         <ul class="right_menu fr">
           <li><a href="#">科技专题</a></li>
@@ -270,7 +270,7 @@
     <script src="./js/jquery-1.12.4.min.js"></script>
     <script src="../web_back/js/template-web.js"></script>
     <!-- 顶部文章模板 -->
-    <script id="article" type="text/html">
+    <script id="article1" type="text/html">
         {{each data}}
         {{if $index == 0}}
       <li class="first">
@@ -285,13 +285,30 @@
     <!-- 分类模板 -->
     <script id="cate1" type="text/html">
         {{each data}}
-        <li><a href="#">{{$value.name}}</a></li>
+        <li><a href="javascript:search({{$value.id}})">{{$value.name}}</a></li>
         {{/each}}
     </script>
     <script id="cate2" type="text/html">
         {{each data}}
-        <li><a href="#')">{{$value.name}}</a></li>
+        <li><a href="javascript:search({{$value.id}})">{{$value.name}}</a></li>
         {{/each}}
+    </script>
+    <script id="article2" type="text/html">
+      {{each data}}
+      <div class="common_news_list">
+        <a href="#" class="list_pic"><img src="{{$value.cover}}" alt=""></a>
+        <h4>
+          <a href="#">{{$value.title}} </a>
+        </h4>
+        <p>
+          {{@$value.content}}
+        </p>
+        <div class="new_info">
+          <span>标签：{{$value.type}}&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;阅读( {{$value.read}} )&nbsp;&nbsp;&nbsp;<i class="fa fa-commenting"></i>&nbsp;评论( {{$value.comment}} )</span>
+          <b>发布于 {{$value.date}}</b>
+        </div>
+      </div>
+      {{/each}}
     </script>
     <script>
       /*
@@ -305,16 +322,19 @@
     */
       $(function() {
           //顶部文章渲染
-         window.search = function(type){
+         window.search = function(id){
             $.ajax({
           url: "http://localhost:8000/admin/search",
           type: "get",
           data: {
             perpage: 5,
             state: "已发布",
+            type: id
           },
           success: function(backData) {
-              $('.focus_list').html(template('article',backData));
+              $('.focus_list').html(template('article1',backData));
+              $('.common_news_list').remove();
+              $('.left_con').append(template('article2',backData));
           }
         });
         }
